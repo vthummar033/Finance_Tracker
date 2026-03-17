@@ -1,0 +1,27 @@
+# Backend
+backend/target/
+backend/.mvn/
+backend/*.log
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.env
+
+# Java/Maven
+*.class
+*.jar
+*.war
+*.ear
+
+# Environment and secrets - DO NOT COMMIT
+backend/src/main/resources/application.properties
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user

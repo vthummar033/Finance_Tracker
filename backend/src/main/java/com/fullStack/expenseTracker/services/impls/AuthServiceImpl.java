@@ -60,10 +60,10 @@ public class AuthServiceImpl implements AuthService {
             User user = createUser(signUpRequestDto);
 
             userRepository.save(user);
-            notificationService.sendUserRegistrationVerificationEmail(user);
+//            notificationService.sendUserRegistrationVerificationEmail(user);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto<>(
-                    ApiResponseStatus.SUCCESS, HttpStatus.CREATED,"Verification email has been successfully sent!"
+                    ApiResponseStatus.SUCCESS, HttpStatus.CREATED,"User registered successfully!"
             ));
 
         }catch(Exception e) {
@@ -77,8 +77,14 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<ApiResponseDto<?>> verifyRegistrationVerification(String code) throws UserVerificationFailedException {
         User user = userRepository.findByVerificationCode(code);
 
-        if (user == null || user.isEnabled()) {
+        if (user == null) {
             throw new UserVerificationFailedException("Verification failed: invalid verification code!");
+        }
+
+        if (user.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto<>(
+                    ApiResponseStatus.SUCCESS, HttpStatus.ACCEPTED, "Verification successful: User account is already active!"
+            ));
         }
 
         long currentTimeInMs = System.currentTimeMillis();
@@ -106,13 +112,13 @@ public class AuthServiceImpl implements AuthService {
         try {
             user.setVerificationCode(generateVerificationCode());
             user.setVerificationCodeExpiryTime(calculateCodeExpirationTime());
-            user.setEnabled(false);
+            user.setEnabled(true);
 
             userRepository.save(user);
-            notificationService.sendUserRegistrationVerificationEmail(user);
+//            notificationService.sendUserRegistrationVerificationEmail(user);
 
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(
-                    ApiResponseStatus.SUCCESS, HttpStatus.OK, "Verification email has been resent successfully!")
+                    ApiResponseStatus.SUCCESS, HttpStatus.OK, "Verification email has been resent successfully (Simulated)!")
             );
         }catch(Exception e) {
             log.error("Registration verification failed: {}", e.getMessage());
@@ -130,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setVerificationCodeExpiryTime(calculateCodeExpirationTime());
                 userRepository.save(user);
 
-                notificationService.sendForgotPasswordVerificationEmail(user);
+//                notificationService.sendForgotPasswordVerificationEmail(user);
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto<>(
                         ApiResponseStatus.SUCCESS,
                         HttpStatus.ACCEPTED,
@@ -216,7 +222,7 @@ public class AuthServiceImpl implements AuthService {
                 passwordEncoder.encode(signUpRequestDto.getPassword()),
                 generateVerificationCode(),
                 calculateCodeExpirationTime(),
-                false,
+                true,
                 determineRoles(signUpRequestDto.getRoles())
         );
     }

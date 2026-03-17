@@ -1,22 +1,30 @@
-import { Link } from "react-router-dom";
-import success from '../../../assets/images/success.gif'
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import AuthService from "../../../services/auth.service";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Logo from '../../../components/utils/Logo';
 
-function RegistrationSuccess() {
-    const navigate = useNavigate();
-
+const RegistrationSuccessfull = () => {
     return (
-
         <div className='container'>
             <div className="auth-form">
-                <img src={success} size='20px'/>
-                <h4 style={{textAlign:"center", color: "green"}}>Congratulations, You account has been successfully created!</h4>
-                <br/>
-                <Link to='/auth/login'><button className="button button-fill" style={{padding: '7px 25px'}}>Login now</button></Link>
+                <Logo />
+                <h3 style={{ textAlign: 'center' }}>🎉 Registration Successful!</h3><br />
+                <div className='msg' style={{ textAlign: 'center', fontWeight: 600 }}>
+                    Your account has been verified and is ready to use.
+                </div>
+                <br />
+                <div className='input-box'>
+                    <Link to='/auth/login'>
+                        <input
+                            type='button'
+                            value='Go to Login'
+                            className='button button-fill'
+                            style={{ cursor: 'pointer' }}
+                        />
+                    </Link>
+                </div>
             </div>
         </div>
-    )
-}
-export default RegistrationSuccess;
+    );
+};
+
+export default RegistrationSuccessfull;

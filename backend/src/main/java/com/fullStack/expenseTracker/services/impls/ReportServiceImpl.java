@@ -56,9 +56,9 @@ public class ReportServiceImpl implements ReportService {
 
         List<TransactionsMonthlySummaryDto> transactionsMonthlySummary = result.stream()
                 .map(data -> new TransactionsMonthlySummaryDto(
-                        (int) data[0],
-                        (double) data[1],
-                        (double) data[2]
+                        ((Number) data[0]).intValue(),
+                        ((Number) data[1]).doubleValue(),
+                        ((Number) data[2]).doubleValue()
                 )).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(

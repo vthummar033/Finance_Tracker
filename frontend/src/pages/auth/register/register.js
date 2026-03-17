@@ -4,6 +4,7 @@ import { Link, useNavigate} from 'react-router-dom';
 import {useForm} from 'react-hook-form';
 import AuthService from '../../../services/auth.service';
 import Logo from '../../../components/utils/Logo';
+import toast from 'react-hot-toast';
 
 function Register() {
 
@@ -24,7 +25,8 @@ function Register() {
                 console.log(response);
                 if (response.data.status === "SUCCESS"){
                     setResponseError("");
-                    navigate(`/auth/userRegistrationVerfication/${data.email}`);
+                    toast.success("Account created! Please login.");
+                    navigate(`/auth/login`);
                 }
                 else {
                     setResponseError("Registration failed: Something went wrong!")

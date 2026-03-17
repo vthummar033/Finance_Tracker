@@ -1,101 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import {useForm} from 'react-hook-form';
-import AuthService from '../../../services/auth.service';
+import React from 'react';
+import { Link, useParams } from 'react-router-dom';
+import Logo from '../../../components/utils/Logo';
 
-const UserRegistrationVerfication = () => {
-    const navigate = useNavigate();
-    
-    const { email } = useParams(); 
+const UserRegistrationVerification = () => {
+    const { email } = useParams();
 
-    const {register, handleSubmit, formState} = useForm();
-
-    const [response_error, setResponseError] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [isSending, setIsSending] = useState(false);
-
-    const onSubmit = async (data) => {
-        setIsLoading(true)        
-        const response = await AuthService.verifyRegistrationVerificationCode(data.code).then(
-            (response) => {
-                console.log(response.data);
-                if (response.data.status === "SUCCESS") {
-                    console.log(response.data);
-                    navigate('/auth/success-registration')
-                    setResponseError("");
-                }else {
-                    setResponseError("Verification failed: Cannot resend email!")
-                }
-                
-            },
-            (error) => {
-                if (error.response) {
-                    const resMessage = error.response.data.response;
-                    setResponseError(resMessage);
-                    console.log(error);
-                }else {
-                    console.log(error);
-                    setResponseError("Verification failed: Cannot resend email!")
-                }
-            }
-          );
-        setIsLoading(false);
-    }
-
-    const resendCode = async() =>{
-        setIsSending(true)         
-        const response = await AuthService.resendRegistrationVerificationCode(email).then(
-            (response) => {
-                console.log(response.data.message);
-                setResponseError("");
-            },
-            (error) => {
-                setResponseError("cannot send email again!");
-            }
-          );
-          setIsSending(false)  
-    }
-
-  return (
-    <div className='container'>
-            <form className="auth-form"  onSubmit={handleSubmit(onSubmit)}>
-                <h2>Verify your email</h2><br/>
-                {
-                    isSending ? 
-                        <div className='msg'>Sending email to {email}...</div> 
-                        : (response_error==="") 
-                        ? <div className='msg'>The verification code has been sent to <span style={{fontWeight:600,  color:'green'}}>{email}</span>.</div>
-                        : <></>
-                }
-                {
-                    (response_error!=="") && <p>{response_error}</p>
-                }
-                
-                <div className='input-box'>
-                    <input 
-                    placeholder='Enter verification code'
-                        type='text'
-                        {...register('code', {
-                            required: "Code is required!",
-                        })}
-                    />
-                    {formState.errors.code && <small>{formState.errors.code.message}</small>}
+    return (
+        <div className='container'>
+            <div className="auth-form">
+                <Logo />
+                <h3 style={{ textAlign: 'center' }}>Verify Your Email</h3><br />
+                <div className='msg' style={{ textAlign: 'center', fontWeight: 600 }}>
+                    A verification link has been sent to <strong>{email}</strong>.<br /><br />
+                    Please check your inbox and click the link to activate your account.
                 </div>
-
-                <div className='msg' style={{fontWeight: 600, fontStyle: 'italic'}}>Please not that the verification code will be expired with in 15 minutes!</div>
-                <br/>
-
-                <div className='input-box'>
-                    <input type='submit' value={isLoading ? "Verifying" : 'Verify'}
-                     className={isLoading ? "button button-fill loading" : "button button-fill"}
-                    />
+                <br />
+                <div className='msg'>
+                    <Link to='/auth/login' className='inline-link'>Back to Login</Link>
                 </div>
-
-                <br/>
-                <div className='msg'>Having problems? <span style={{cursor: 'pointer'}} onClick={resendCode} className='inline-link'>{isLoading ? "Sending code" : 'Resend code'}</span></div>
-            </form>
-    </div>
-  );
+            </div>
+        </div>
+    );
 };
 
-export default UserRegistrationVerfication;
+export default UserRegistrationVerification;
