@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private NotificationService notificationService;
+    // @Autowired
+    // private NotificationService notificationService;
 
     @Autowired
     RoleFactory roleFactory;
